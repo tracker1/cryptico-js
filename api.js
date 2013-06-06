@@ -1,5 +1,4 @@
-
-var cryptico = (function() {
+var cryptico = module.exports = (function() {
 
     var my = {};
 
@@ -352,54 +351,3 @@ var cryptico = (function() {
     return my;
 
 }());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

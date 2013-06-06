@@ -1,0 +1,25 @@
+{
+	"name": "cryptico-node",
+	"version": "1.0.0",
+	"author": "Rye Terrell <ryeterrell@ryeterrell.net>",
+	"contributors": [
+		{
+			"name": "Roberto Aguilar",
+			"email": "roberto@baremetal.io"
+		},
+		{
+			"name": "PhpMyCoder"
+		}
+	],
+	"main": "./lib/cryptico.js",
+	"repositroy": {
+		"type": "git",
+		"url": "https://github.com/phpmycoder/cryptico-node.git"
+	},
+	"keywords": [
+		"cryptography",
+		"public-key",
+		"private-key",
+		"RSA"
+	]
+}
