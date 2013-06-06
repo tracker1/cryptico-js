@@ -12,7 +12,7 @@
 		}
 	],
 	"main": "./lib/cryptico.js",
-	"repositroy": {
+	"repository": {
 		"type": "git",
 		"url": "https://github.com/phpmycoder/cryptico-node.git"
 	},
