@@ -1,4 +1,3 @@
-
 /**
 *
 *  Secure Hash Algorithm (SHA256)
@@ -520,16 +519,3 @@ var MD5 = function (string) {
  
 	return temp.toLowerCase();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

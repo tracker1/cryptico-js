@@ -6,10 +6,6 @@
 // Bits per digit
 var dbits;
 
-// JavaScript engine analysis
-var canary = 0xdeadbeefcafe;
-var j_lm = ((canary & 0xffffff) == 0xefcafe);
-
 // (public) Constructor
 
 function BigInteger(a, b, c) {
@@ -24,27 +20,11 @@ function nbi() {
     return new BigInteger(null);
 }
 
-// am: Compute w_j += (x*this_i), propagate carries,
-// c is initial carry, returns final carry.
-// c < 3*dvalue, x < 2*dvalue, this_i < dvalue
-// We need to select the fastest one that works in this environment.
-// am1: use a single mult and divide to get the high bits,
-// max digit bits should be 26 because
-// max internal value = 2*dvalue^2-2*dvalue (< 2^53)
-
-function am1(i, x, w, j, c, n) {
-    while (--n >= 0) {
-        var v = x * this[i++] + w[j] + c;
-        c = Math.floor(v / 0x4000000);
-        w[j++] = v & 0x3ffffff;
-    }
-    return c;
-}
-// am2 avoids a big mult-and-extract completely.
+// am avoids a big mult-and-extract completely.
 // Max digit bits should be <= 30 because we do bitwise ops
 // on values up to 2*hdvalue^2-hdvalue-1 (< 2^31)
 
-function am2(i, x, w, j, c, n) {
+function am(i, x, w, j, c, n) {
     var xl = x & 0x7fff,
         xh = x >> 15;
     while (--n >= 0) {
@@ -57,34 +37,9 @@ function am2(i, x, w, j, c, n) {
     }
     return c;
 }
-// Alternately, set max digit bits to 28 since some
-// browsers slow down when dealing with 32-bit numbers.
 
-function am3(i, x, w, j, c, n) {
-    var xl = x & 0x3fff,
-        xh = x >> 14;
-    while (--n >= 0) {
-        var l = this[i] & 0x3fff;
-        var h = this[i++] >> 14;
-        var m = xh * l + h * xl;
-        l = xl * l + ((m & 0x3fff) << 14) + w[j] + c;
-        c = (l >> 28) + (m >> 14) + xh * h;
-        w[j++] = l & 0xfffffff;
-    }
-    return c;
-}
-if (j_lm && (navigator.appName == "Microsoft Internet Explorer")) {
-    BigInteger.prototype.am = am2;
-    dbits = 30;
-}
-else if (j_lm && (navigator.appName != "Netscape")) {
-    BigInteger.prototype.am = am1;
-    dbits = 26;
-}
-else { // Mozilla/Netscape seems to prefer am3
-    BigInteger.prototype.am = am3;
-    dbits = 28;
-}
+BigInteger.prototype.am = am;
+dbits = 30;
 
 BigInteger.prototype.DB = dbits;
 BigInteger.prototype.DM = ((1 << dbits) - 1);
@@ -1561,22 +1516,3 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 
 // JSBN-specific extension
 BigInteger.prototype.square = bnSquare;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

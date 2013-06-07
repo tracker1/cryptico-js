@@ -113,7 +113,7 @@
 
         // Flatten the seed string or build one from local entropy if needed.
         seed = mixkey(flatten(
-        use_entropy ? [seed, pool] : arguments.length ? seed : [new Date().getTime(), pool, window], 3), key);
+        use_entropy ? [seed, pool] : arguments.length ? seed : [new Date().getTime(), pool], 3), key);
 
         // Use the seed to initialize an ARC4 generator.
         arc4 = new ARC4(key);
@@ -400,12 +400,6 @@ if(rng_pool == null) {
   rng_pool = new Array();
   rng_pptr = 0;
   var t;
-  if(navigator.appName == "Netscape" && navigator.appVersion < "5" && window.crypto) {
-    // Extract entropy (256 bits) from NS4 RNG if available
-    var z = window.crypto.random(32);
-    for(t = 0; t < z.length; ++t)
-      rng_pool[rng_pptr++] = z.charCodeAt(t) & 255;
-  }  
   while(rng_pptr < rng_psize) {  // extract some randomness from Math.random()
     t = Math.floor(65536 * Math.random());
     rng_pool[rng_pptr++] = t >>> 8;
@@ -439,9 +433,3 @@ function rng_get_bytes(ba) {
 function SecureRandom() {}
 
 SecureRandom.prototype.nextBytes = rng_get_bytes;
-
-
-
-
-
-
