@@ -131,7 +131,7 @@ function RSAToJSON()
         e: this.e.toString(16),
         n: this.n.toString(16),
         p: this.p.toString(16),
-        q: this.q.toString(16),
+        q: this.q.toString(16)
     }
 }
 
@@ -218,7 +218,7 @@ function RSASetPrivateEx(N, E, D, P, Q, DP, DQ, C)
         this.dmq1 = parseBigInt(DQ, 16);
         this.coeff = parseBigInt(C, 16);
     }
-    else alert("Invalid RSA private key");
+    else throw new Error("Invalid RSA private key");
 }
 
 // Generate a new random private key B bits long, using public expt E
@@ -349,7 +349,7 @@ function _rsasign_getHexPaddedDigestInfoForString(s, keySize, hashAlg)
     {
         sMid += "ff";
     }
-    sPaddedMessageHex = sHead + sMid + sTail;
+    var sPaddedMessageHex = sHead + sMid + sTail;
     return sPaddedMessageHex;
 }
 
