@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-cat ./src/jsbn.js ./src/random.js ./src/hash.js ./src/rsa.js ./src/aes.js ./src/api.js > ./lib/cryptico.js

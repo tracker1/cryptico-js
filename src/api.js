@@ -1,4 +1,4 @@
-var cryptico = module.exports = (function() {
+var cryptico = (function() {
 
     var my = {};
 
@@ -351,5 +351,3 @@ var cryptico = module.exports = (function() {
     return my;
 
 }());
-
-module.exports.RSAKey = RSAKey;
