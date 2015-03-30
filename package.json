@@ -1,12 +1,15 @@
 {
   "name": "cryptico-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Encryption/Decryption Library (AES/RSA, based on Cryptico)",
   "main": "./lib/cryptico.js",
   "scripts": {
     "postinstall": "npm dedupe",
     "start": "gulp",
-    "build": "gulp"
+    "build": "gulp",
+    "major": "npm version major && npm publish && git push origin master && git push --tags",
+    "minor": "npm version minor && npm publish && git push origin master && git push --tags",
+    "patch": "npm version patch && npm publish && git push origin master && git push --tags"
   },
   "repository": {
     "type": "git",
