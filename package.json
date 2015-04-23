@@ -7,9 +7,9 @@
     "postinstall": "npm dedupe",
     "start": "gulp",
     "build": "gulp",
-    "publish-major": "npm run build && npm version major && npm publish && git push origin master && git push origin master --tags",
-    "publish-minor": "npm run build && npm version minor && npm publish && git push origin master && git push origin master --tags",
-    "publish-patch": "npm run build && npm version patch && npm publish && git push origin master && git push origin master --tags"
+    "publish-major": "npm run build && git commit -am pre-publish-build && npm version major && npm publish && git push origin master && git push origin master --tags",
+    "publish-minor": "npm run build && git commit -am pre-publish-build && npm version minor && npm publish && git push origin master && git push origin master --tags",
+    "publish-patch": "npm run build && git commit -am pre-publish-build && npm version patch && npm publish && git push origin master && git push origin master --tags"
   },
   "repository": {
     "type": "git",
