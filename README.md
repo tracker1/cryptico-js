@@ -79,7 +79,7 @@ var EncryptionResult = cryptico.encrypt(PlainText, MattsPublicKeyString, SamsRSA
 The public key associated with the signature can be used by Matt to make sure that it was sent by Sam, but there are a lot of characters to examine in the key - it would be easy to make a mistake.  Instead, the public key string associated with the signature can be processed like this:
     
 ```javascript
-var PublicKeyID = cryptico.publicKeyID(EncryptionResult.publickey);
+var PublicKeyID = cryptico.publicKeyID(EncryptionResult.cipher);
 ```
 
 and `PublicKeyID` would look something like this:
