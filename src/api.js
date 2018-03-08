@@ -288,65 +288,87 @@ var cryptico = (function() {
         return rsa
     }
     
-    my.encrypt = function(plaintext, publickeystring, signingkey)
-    {
+    my.encrypt = function(plaintext, publickeystring, signingkey) {
         var cipherblock = "";
         var aeskey = my.generateAESKey();
-        try
-        {
-            var publickey = my.publicKeyFromString(publickeystring);
-            cipherblock += my.b16to64(publickey.encrypt(my.bytes2string(aeskey))) + "?";
+        try {
+          var publickey = my.publicKeyFromString(publickeystring);
+          cipherblock += my.b16to64(publickey.encrypt(my.bytes2string(aeskey))) + "?";
+        } catch (err) {
+          return {
+            status: "Invalid public key"
+          };
         }
-        catch(err)
-        {
-            return {status: "Invalid public key"};
+        if (signingkey) {
+          plaintext += my.sign(plaintext, signingkey);
         }
-        if(signingkey)
-        {
-            signString = cryptico.b16to64(signingkey.signString(plaintext, "sha256"));
-            plaintext += "::52cee64bb3a38f6403386519a39ac91c::";
-            plaintext += cryptico.publicKeyString(signingkey);
-            plaintext += "::52cee64bb3a38f6403386519a39ac91c::";
-            plaintext += signString;
-        }
-        cipherblock += my.encryptAESCBC(plaintext, aeskey);    
-        return {status: "success", cipher: cipherblock};
-    }
-
-    my.decrypt = function(ciphertext, key)
-    {
+        cipherblock += my.encryptAESCBC(plaintext, aeskey);
+        return {
+          status: "success",
+          cipher: cipherblock
+        };
+      }
+      my.decrypt = function(ciphertext, key) {
         var cipherblock = ciphertext.split("?");
         var aeskey = key.decrypt(my.b64to16(cipherblock[0]));
-        if(aeskey == null)
-        {
-            return {status: "failure"};
+        if (aeskey == null) {
+          return {
+            status: "failure"
+          };
         }
         aeskey = my.string2bytes(aeskey);
-        var plaintext = my.decryptAESCBC(cipherblock[1], aeskey).split("::52cee64bb3a38f6403386519a39ac91c::");
-        if(plaintext.length == 3)
-        {
-            var publickey = my.publicKeyFromString(plaintext[1]);
-            var signature = my.b64to16(plaintext[2]);
-            if(publickey.verifyString(plaintext[0], signature))
-            {
-                return {status: "success", 
-                        plaintext: plaintext[0], 
-                        signature: "verified", 
-                        publicKeyString: my.publicKeyString(publickey)};
-            }
-            else
-            {
-                return {status: "success", 
-                        plaintext: plaintext[0], 
-                        signature: "forged", 
-                        publicKeyString: my.publicKeyString(publickey)};
-            }
+        var plaintext = my.decryptAESCBC(cipherblock[1], aeskey);
+        if (plaintext.indexOf("::52cee64bb3a38f6403386519a39ac91c::") != -1) {
+          return my._confirm(plaintext);
+        } else {
+          return {
+            status: "success",
+            plaintext: plaintext[0],
+            signature: "unsigned"
+          };
         }
-        else
-        {
-            return {status: "success", plaintext: plaintext[0], signature: "unsigned"};
+      }
+      
+      my.sign = function(plaintext, signingkey) {
+        var signString = cryptico.b16to64(signingkey.signString(plaintext, "sha256"));
+        plaintext += "::52cee64bb3a38f6403386519a39ac91c::";
+        plaintext += cryptico.publicKeyString(signingkey);
+        plaintext += "::52cee64bb3a38f6403386519a39ac91c::";
+        plaintext += signString;
+        return plaintext;
+      }
+      
+      my.verify = function(plaintext) {
+        var result = my._confirm(plaintext);
+        return (result.status === "success" && result.signature === "verified");
+      }
+
+      my._confirm = function(plaintext) {
+        plaintext = plaintext.split("::52cee64bb3a38f6403386519a39ac91c::");
+        if (plaintext.length == 3) {
+          var publickey = my.publicKeyFromString(plaintext[1]);
+          var signature = my.b64to16(plaintext[2]);
+          if (publickey.verifyString(plaintext[0], signature)) {
+            return {
+              status: "success",
+              plaintext: plaintext[0],
+              signature: "verified",
+              publicKeyString: my.publicKeyString(publickey)
+            };
+          } else {
+            return {
+              status: "success",
+              plaintext: plaintext[0],
+              signature: "forged",
+              publicKeyString: my.publicKeyString(publickey)
+            };
+          }
+        } else {
+          return {
+            status: "failure"
+          };
         }
-    }
+      }
 
     return my;
 
