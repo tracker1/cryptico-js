@@ -473,8 +473,10 @@ RSAKey.prototype.toJSON = function() {
 
 // global deserializer method
 RSAKey.fromJSON = function(key) {
-    let json = JSON.parse(key);
-    if (json.type !== 'RSAKey') return null;
+    let json = typeof key === 'string' ? JSON.parse(key) : key;
+    if (!(json && json.type === 'RSAKey')) {
+        return null;
+    } 
     let rsa = new RSAKey();
     rsa.setPrivateEx(json.n, json.e, json.d, json.p, json.q, json.dmp1, json.dmq1, json.coeff);
     return rsa;
